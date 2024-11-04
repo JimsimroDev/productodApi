@@ -2,7 +2,9 @@ package com.jimsirmrodev.apiProductos.adapter.controller;
 
 import java.util.List;
 
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +22,7 @@ import com.jimsirmrodev.apiProductos.usecase.productos.ProductoServiceImpl;
  * ProductosController
  */
 @RestController
-@RequestMapping("/api/producto")
+@RequestMapping("/api/v1/producto")
 public class ProductosController {
 
   @Autowired
@@ -48,8 +50,9 @@ public class ProductosController {
    * Edpoint Realiza la busqueda por nombre y si no existe retorna un mensaje
    */
   @GetMapping("/buscar")
-  public List<Producto> buscarPorNombre(@RequestParam String nombre) {
-    return productoServiceImpl.buscarPorNombre(nombre);
+  public ResponseEntity<List<Producto>> buscarPorNombre(@RequestParam String nombre) {
+    List<Producto> productoEncontrado = productoServiceImpl.buscarPorNombre(nombre);
+    return ResponseEntity.ok(productoEncontrado);
   }
 
   /**
