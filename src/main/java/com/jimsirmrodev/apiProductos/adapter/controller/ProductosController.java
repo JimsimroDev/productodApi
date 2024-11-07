@@ -2,8 +2,10 @@ package com.jimsirmrodev.apiProductos.adapter.controller;
 
 import java.util.List;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jimsirmrodev.apiProductos.adapter.dto.producto.DatosListarProducto;
+import com.jimsirmrodev.apiProductos.adapter.dto.producto.DatosRegistrarProducto;
 import com.jimsirmrodev.apiProductos.domain.model.Producto;
 import com.jimsirmrodev.apiProductos.usecase.productos.ProductoServiceImpl;
 
@@ -33,35 +37,33 @@ public class ProductosController {
    * en json
    */
   @GetMapping
-  public List<Producto> getProdutos() {
-    return productoServiceImpl.listarProductos();
+  public ResponseEntity<Page<DatosListarProducto>> getProdutos(@PageableDefault(size = 5) Pageable paginacion) {
+    return ResponseEntity.ok(productoServiceImpl.listarProductos(paginacion));
   }
 
   /**
    * Edpoint Realiza la busqueda por id y si no existe retorna un mensaje
    */
   @GetMapping("/{id}")
-  public Producto buscarPorId(@PathVariable Long id) {
-    var producto = productoServiceImpl.buscarPorId(id);
-    return producto;
+  public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
+    return productoServiceImpl.buscarPorId(id);
   }
 
   /**
    * Edpoint Realiza la busqueda por nombre y si no existe retorna un mensaje
    */
   @GetMapping("/buscar")
-  public ResponseEntity<List<Producto>> buscarPorNombre(@RequestParam String nombre) {
-    List<Producto> productoEncontrado = productoServiceImpl.buscarPorNombre(nombre);
-    return ResponseEntity.ok(productoEncontrado);
+  public ResponseEntity<?> buscarPorNombre(@RequestParam String nombre) {
+    return productoServiceImpl.buscarPorNombre(nombre);
   }
 
   /**
    * Edpoint Recibe los datos en formato json y los guarda en memoria
    */
   @PostMapping
-  public Producto agregarProductos(@RequestBody Producto producto) {
-    productoServiceImpl.guardarProducto(producto);
-    return producto;
+  public ResponseEntity<Producto> agregarProductos(@RequestBody DatosRegistrarProducto datosresgistrarProducto) {
+    productoServiceImpl.guardarProducto(datosresgistrarProducto);
+    return ResponseEntity.ok().build();
   }
 
   @PutMapping("/{id}")

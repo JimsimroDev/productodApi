@@ -1,12 +1,18 @@
 package com.jimsirmrodev.apiProductos.usecase.productos;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.jimsirmrodev.apiProductos.adapter.dto.producto.DatosListarProducto;
+import com.jimsirmrodev.apiProductos.adapter.dto.producto.DatosRegistrarProducto;
+import com.jimsirmrodev.apiProductos.domain.model.Cliente;
 import com.jimsirmrodev.apiProductos.domain.model.Producto;
+import com.jimsirmrodev.apiProductos.infraestructura.repository.JpaClienteRepository;
+import com.jimsirmrodev.apiProductos.infraestructura.repository.JpaProductoRepository;
 
 /**
  * ProductoServiceImpl
@@ -14,57 +20,76 @@ import com.jimsirmrodev.apiProductos.domain.model.Producto;
 @Service
 public class ProductoServiceImpl implements ProductoService {
 
-  private List<Producto> listaProductos = new ArrayList<>() {
-    {
-      add(new Producto("Cafe", 1.2344));
-      add(new Producto("Azucar", 1.2344));
-      add(new Producto("Arroz", 1.2344));
-
-    }
-  };
+  @Autowired
+  private JpaProductoRepository jpaProductoRepository;
+  @Autowired
+  private JpaClienteRepository jpaClienteRepository;
 
   @Override
-  public List<Producto> listarProductos() {
-    return listaProductos;
+  public Page<DatosListarProducto> listarProductos(Pageable paginacion) {
+    return jpaProductoRepository.findBy(paginacion)
+        .map(DatosListarProducto::new);
   }
 
   @Override
-  public Producto buscarPorId(Long id) {
-    for (Producto producto : listaProductos) {
-      if (producto.getId() == id) {
-        return producto;
-      }
+  public ResponseEntity<?> buscarPorId(Long id) {
+    var productoEncontrado = jpaProductoRepository.findById(id);
+
+    if (productoEncontrado.isPresent()) {
+      // Devuelve el DTO con el cliente
+      DatosListarProducto datosListarProducto = new DatosListarProducto(productoEncontrado.get());
+      return ResponseEntity.ok(datosListarProducto);
+    } else {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Producto no encontrado con el id " + id);
     }
-    throw new RuntimeException("el producto con ese id no existe");
   }
 
   @Override
   public void eliminarProducto(Long id) {
-    listaProductos.removeIf(producto -> producto.getId().equals(id));// Con este predicado se elimina el producto de
+    // listaProductos.removeIf(producto -> producto.getId().equals(id));// Con este
+    // predicado se elimina el producto de
   }
 
   @Override
-  public List<Producto> buscarPorNombre(String nombre) {
-    return listaProductos.stream().filter(producto -> producto.getNombre().toLowerCase().contains(nombre.toLowerCase()))
-        .collect(Collectors.toList());
+  public ResponseEntity<?> buscarPorNombre(String nombre) {
+    var productoEncontradoNombre = jpaProductoRepository.findByNombreIgnoreCaseContaining(nombre);
+
+    if (productoEncontradoNombre.isPresent()) {
+      // Devuelve el DTO con el cliente
+      DatosListarProducto datosListarProducto = new DatosListarProducto(productoEncontradoNombre.get());
+      return ResponseEntity.ok(datosListarProducto);
+    } else {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Producto no encontrado con el nombre " + nombre);
+    }
   }
 
   @Override
-  public void guardarProducto(Producto producto) {
-    listaProductos.add(producto);
+  public void guardarProducto(DatosRegistrarProducto datosRegistrarProducto) {
+    Cliente cliente = jpaClienteRepository.findById(datosRegistrarProducto.fk_cliente()).orElseThrow();
+    datosRegistrarProducto = new DatosRegistrarProducto(
+        datosRegistrarProducto.nombre(),
+        datosRegistrarProducto.precio(),
+        datosRegistrarProducto.fk_cliente(),
+        cliente);
+
+    jpaProductoRepository.save(new Producto(datosRegistrarProducto));
   }
 
   @Override
   public void actualizarProducto(Long id, Producto producto) {
-    for (int i = 0; i < listaProductos.size(); i++) {
-      Producto productoEncontrado = listaProductos.get(i);
-      if (productoEncontrado.getId().equals(id)) {
-        // Actualiza los campos del producto
-        productoEncontrado.setNombre(producto.getNombre());
-        productoEncontrado.setPrecio(producto.getPrecio());
-        listaProductos.set(i, productoEncontrado); // Reemplaza el producto actualizado
-        return; // Sale del método después de actualizar
-      }
-    }
+    /*
+     * for (int i = 0; i < listaProductos.size(); i++) {
+     * Producto productoEncontrado = listaProductos.get(i);
+     * if (productoEncontrado.getId().equals(id)) {
+     * // Actualiza los campos del producto
+     * productoEncontrado.setNombre(producto.getNombre());
+     * productoEncontrado.setPrecio(producto.getPrecio());
+     * listaProductos.set(i, productoEncontrado); // Reemplaza el producto
+     * actualizado
+     * return; // Sale del método después de actualizar
+     * }
+     * }
+     */
   }
+
 }

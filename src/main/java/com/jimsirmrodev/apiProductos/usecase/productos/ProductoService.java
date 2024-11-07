@@ -1,7 +1,11 @@
 package com.jimsirmrodev.apiProductos.usecase.productos;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 
+import com.jimsirmrodev.apiProductos.adapter.dto.producto.DatosListarProducto;
+import com.jimsirmrodev.apiProductos.adapter.dto.producto.DatosRegistrarProducto;
 import com.jimsirmrodev.apiProductos.domain.model.Producto;
 
 /**
@@ -9,13 +13,13 @@ import com.jimsirmrodev.apiProductos.domain.model.Producto;
  */
 public interface ProductoService {
 
-  List<Producto> listarProductos();
+  Page<DatosListarProducto> listarProductos(Pageable paginacion);
 
-  Producto buscarPorId(Long id);
+  ResponseEntity<?> buscarPorId(Long id);
 
-  List<Producto> buscarPorNombre(String nombre);
+  ResponseEntity<?> buscarPorNombre(String nombre);
 
-  void guardarProducto(Producto producto);
+  void guardarProducto(DatosRegistrarProducto datosResgistroProducto);
 
   void actualizarProducto(Long id, Producto producto);
 
