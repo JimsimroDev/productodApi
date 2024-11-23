@@ -1,11 +1,12 @@
 package com.jimsirmrodev.apiProductos.adapter.dto.cliente;
 
-/*
- * DatosCliente
+/**
+ * ActualizarDatosCliente
  */
-public record DatosCliente(
+public record ActualizarDatosCliente(
     Long id_cliente,
     String nombre,
     String telefono,
     String correo) {
+
 }

@@ -1,7 +1,5 @@
 package com.jimsirmrodev.apiProductos.adapter.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,16 +15,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jimsirmrodev.apiProductos.adapter.dto.producto.ActualizarDatosProducto;
 import com.jimsirmrodev.apiProductos.adapter.dto.producto.DatosListarProducto;
 import com.jimsirmrodev.apiProductos.adapter.dto.producto.DatosRegistrarProducto;
 import com.jimsirmrodev.apiProductos.domain.model.Producto;
 import com.jimsirmrodev.apiProductos.usecase.productos.ProductoServiceImpl;
 
+import jakarta.transaction.Transactional;
+
 /**
  * ProductosController
  */
 @RestController
-@RequestMapping("/api/v1/producto")
+@RequestMapping("/producto")
 public class ProductosController {
 
   @Autowired
@@ -61,21 +62,23 @@ public class ProductosController {
    * Edpoint Recibe los datos en formato json y los guarda en memoria
    */
   @PostMapping
+  @Transactional
   public ResponseEntity<Producto> agregarProductos(@RequestBody DatosRegistrarProducto datosresgistrarProducto) {
     productoServiceImpl.guardarProducto(datosresgistrarProducto);
     return ResponseEntity.ok().build();
   }
 
   @PutMapping("/{id}")
-  public void actualizarProducto(
-      @PathVariable Long id, @RequestBody Producto producto) {
-    productoServiceImpl.actualizarProducto(id, producto);
+  @Transactional
+  public void actualizarProducto(@RequestBody ActualizarDatosProducto actualizarProducto) {
+    productoServiceImpl.actualizarProducto(actualizarProducto);
   }
 
   /**
    * Edpoint para eliminar prodcto por id
    */
   @DeleteMapping("/{id}")
+  @Transactional
   public void eleminarProducto(@PathVariable Long id) {
     productoServiceImpl.eliminarProducto(id);
   }

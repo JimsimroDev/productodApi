@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.jimsirmrodev.apiProductos.adapter.dto.producto.ActualizarDatosProducto;
 import com.jimsirmrodev.apiProductos.adapter.dto.producto.DatosListarProducto;
 import com.jimsirmrodev.apiProductos.adapter.dto.producto.DatosRegistrarProducto;
 import com.jimsirmrodev.apiProductos.domain.model.Cliente;
@@ -46,8 +47,8 @@ public class ProductoServiceImpl implements ProductoService {
 
   @Override
   public void eliminarProducto(Long id) {
-    // listaProductos.removeIf(producto -> producto.getId().equals(id));// Con este
-    // predicado se elimina el producto de
+    Producto producto = jpaProductoRepository.getReferenceById(id);
+    jpaProductoRepository.delete(producto);
   }
 
   @Override
@@ -76,20 +77,12 @@ public class ProductoServiceImpl implements ProductoService {
   }
 
   @Override
-  public void actualizarProducto(Long id, Producto producto) {
-    /*
-     * for (int i = 0; i < listaProductos.size(); i++) {
-     * Producto productoEncontrado = listaProductos.get(i);
-     * if (productoEncontrado.getId().equals(id)) {
-     * // Actualiza los campos del producto
-     * productoEncontrado.setNombre(producto.getNombre());
-     * productoEncontrado.setPrecio(producto.getPrecio());
-     * listaProductos.set(i, productoEncontrado); // Reemplaza el producto
-     * actualizado
-     * return; // Sale del método después de actualizar
-     * }
-     * }
-     */
+  public void actualizarProducto(ActualizarDatosProducto actualizarDatosProducto) {
+    Producto productoExistenete = jpaProductoRepository
+        .getReferenceById(actualizarDatosProducto.id());
+
+    productoExistenete.setNombre(actualizarDatosProducto.nombre());
+    productoExistenete.setPrecio(actualizarDatosProducto.precio());
   }
 
 }

@@ -4,9 +4,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
+import com.jimsirmrodev.apiProductos.adapter.dto.producto.ActualizarDatosProducto;
 import com.jimsirmrodev.apiProductos.adapter.dto.producto.DatosListarProducto;
 import com.jimsirmrodev.apiProductos.adapter.dto.producto.DatosRegistrarProducto;
-import com.jimsirmrodev.apiProductos.domain.model.Producto;
 
 /**
  * ProductoService
@@ -21,7 +21,7 @@ public interface ProductoService {
 
   void guardarProducto(DatosRegistrarProducto datosResgistroProducto);
 
-  void actualizarProducto(Long id, Producto producto);
+  void actualizarProducto(ActualizarDatosProducto actualizarDatosProducto);
 
   void eliminarProducto(Long id);
 }

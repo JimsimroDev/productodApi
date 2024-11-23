@@ -1,5 +1,8 @@
 package com.jimsirmrodev.apiProductos.domain.model;
 
+import com.jimsirmrodev.apiProductos.adapter.dto.cliente.ActualizarDatosCliente;
+import com.jimsirmrodev.apiProductos.adapter.dto.cliente.RegistrarDatosCliente;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,4 +25,23 @@ public class Cliente {
   private Long id_cliente;
   private String nombre;
   private String telefono;
+  private String correo;
+
+  public Cliente(RegistrarDatosCliente registrarDatosCLiente) {
+    this.nombre = registrarDatosCLiente.nombre();
+    this.telefono = registrarDatosCLiente.telefono();
+    this.correo = registrarDatosCLiente.correo();
+  }
+
+  public void actualizarDatosCLiente(ActualizarDatosCliente actualizarDatosCliente) {
+    if (actualizarDatosCliente.nombre() != null) {
+      this.nombre = actualizarDatosCliente.nombre();
+    }
+    if (actualizarDatosCliente.telefono() != null) {
+      this.telefono = actualizarDatosCliente.telefono();
+    }
+    if (actualizarDatosCliente.correo() != null) {
+      this.correo = actualizarDatosCliente.correo();
+    }
+  }
 }

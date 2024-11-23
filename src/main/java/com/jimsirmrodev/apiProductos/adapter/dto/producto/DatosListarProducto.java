@@ -20,6 +20,7 @@ public record DatosListarProducto(
         producto.getCliente() != null ? new DatosCliente(
             producto.getCliente().getId_cliente(),
             producto.getCliente().getNombre(),
-            producto.getCliente().getTelefono()) : null);
+            producto.getCliente().getTelefono(),
+            producto.getCliente().getCorreo()) : null);
   }
 }
