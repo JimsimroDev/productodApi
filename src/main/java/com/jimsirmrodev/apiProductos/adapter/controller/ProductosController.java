@@ -34,7 +34,8 @@ public class ProductosController {
   private ProductoServiceImpl productoServiceImpl;
 
   /**
-   * Edpoint Retorna la lista de los productos que hay en la lista y los muestra
+   * Edpoint Retorna la lista de los productos que hay en la base de datos y los
+   * muestra
    * en json
    */
   @GetMapping

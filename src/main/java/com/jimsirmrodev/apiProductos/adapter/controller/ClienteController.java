@@ -5,12 +5,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -43,8 +43,6 @@ public class ClienteController {
   @PostMapping
   @Transactional
   public ResponseEntity<RegistrarDatosCliente> crearCliente(@RequestBody RegistrarDatosCliente registrarDatosCliente) {
-    // Verificar que los datos recibidos no sean nulos
-    // Imprimir valores recibidos
 
     if (registrarDatosCliente == null || registrarDatosCliente.nombre() == null
         || registrarDatosCliente.telefono() == null || registrarDatosCliente.correo() == null) {
